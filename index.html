@@ -58,6 +58,44 @@ label{font-size:.8rem;color:var(--muted);display:block;margin-bottom:.1rem}
 .lightbox{position:fixed;inset:0;background:rgba(0,0,0,.85);display:flex;align-items:center;justify-content:center;z-index:200}.lightbox img{max-width:92%;max-height:88%;border-radius:8px}
 .subform{background:#f8fafc;border:1px dashed var(--line);border-radius:8px;padding:.6rem;margin:.3rem 0}
 @media(max-width:600px){.two,.three{grid-template-columns:1fr}header.top nav a{font-size:.8rem;padding:.28rem .5rem}}
+.bugbtn{position:fixed;bottom:1rem;left:1rem;background:#fff;border:1px solid var(--line);color:var(--danger);z-index:90;border-radius:20px;padding:.42rem .8rem;font-size:.82rem;font-weight:600;box-shadow:0 2px 10px rgba(0,0,0,.12);cursor:pointer}
+.mini{width:54px;height:40px;object-fit:cover;border-radius:5px;background:#e7edf4;vertical-align:middle;display:inline-block}
+.filelbl{display:inline-block;position:relative;overflow:hidden}
+.filelbl input[type=file]{position:absolute;inset:0;opacity:0;cursor:pointer;font-size:0;width:100%;height:100%}
+.up{display:flex;align-items:center;gap:.4rem;flex-wrap:wrap;margin-bottom:.5rem}
+.bulkbar{display:flex;gap:.4rem;align-items:center;flex-wrap:wrap;margin:.3rem 0}
+.pmgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:.5rem}
+.pmc{position:relative;border:1px solid var(--line);border-radius:8px;overflow:hidden;background:#fff}
+.pmc>img{width:100%;height:104px;object-fit:cover;display:block;cursor:pointer;background:#e7edf4}
+.pmc .pmck{position:absolute;top:.3rem;left:.3rem;width:auto;margin:0;transform:scale(1.25)}
+.pmc .cov{position:absolute;top:.3rem;right:.3rem;background:var(--gold);color:#fff;font-size:.66rem;font-weight:700;padding:.1rem .45rem;border-radius:10px}
+.pmc-b{display:flex;flex-wrap:wrap;gap:.2rem;padding:.3rem;justify-content:center}
+.pmc-b button{padding:.2rem .42rem;font-size:.72rem}
+.leadphoto{width:100%;max-width:260px;aspect-ratio:16/10;object-fit:cover;border-radius:8px;background:#e7edf4;display:block;margin-bottom:.4rem}
+.lb-nav{position:absolute;top:50%;transform:translateY(-50%);background:rgba(255,255,255,.16);color:#fff;font-size:2rem;border:none;width:48px;height:66px;cursor:pointer;border-radius:8px}
+.lb-prev{left:2%}.lb-next{right:2%}
+.lb-x{position:absolute;top:3%;right:3%;background:rgba(255,255,255,.16);color:#fff;font-size:1.1rem;width:40px;height:40px;border:none;cursor:pointer;border-radius:50%}
+@media(max-width:600px){.pmc>img{height:120px}.lb-nav{width:40px;height:56px;font-size:1.5rem}}
+.lcard{display:flex;gap:.7rem;align-items:stretch;background:#fff;border:1px solid var(--line);border-radius:10px;padding:.5rem;margin-bottom:.55rem}
+.lcard:hover{box-shadow:0 2px 10px rgba(0,0,0,.07)}
+.lc-img{width:120px;min-width:120px;height:80px;object-fit:cover;border-radius:8px;background:#e7edf4;cursor:pointer}
+.lc-body{flex:1;min-width:0}
+.lc-body h3{margin:.05rem 0 .2rem;font-size:1rem;color:var(--navy);cursor:pointer}
+.thumb-md{width:112px;height:74px;object-fit:cover;border-radius:7px;background:#e7edf4;vertical-align:middle;cursor:pointer}
+.recocard{display:flex;gap:.7rem;align-items:center;background:#fff;border:1px solid var(--line);border-radius:10px;padding:.5rem .6rem;margin-bottom:.5rem;cursor:pointer}
+.recocard:hover{box-shadow:0 2px 10px rgba(0,0,0,.07)}
+.recostrip{display:flex;gap:.25rem;overflow:hidden}
+.recostrip img{width:64px;height:46px;object-fit:cover;border-radius:5px;background:#e7edf4}
+.rprev{border:1px solid var(--line);border-radius:8px;padding:.6rem;background:#fff;max-height:360px;overflow:auto}
+.rp-prop{border-bottom:1px solid var(--line);padding:.5rem 0}
+.rp-imgs{display:flex;gap:.3rem;flex-wrap:wrap;margin-top:.3rem}
+.rp-imgs img{width:118px;height:84px;object-fit:cover;border-radius:6px}
+.rsel-imgs{display:flex;gap:.3rem;flex-wrap:wrap;margin-top:.3rem}
+.rs-i{position:relative;cursor:pointer;border:2px solid transparent;border-radius:6px;overflow:hidden}
+.rs-i.sel{border-color:var(--gold)}
+.rs-i img{width:80px;height:58px;object-fit:cover;display:block}
+.rs-i .rs-c{position:absolute;top:1px;right:2px;background:var(--gold);color:#fff;font-size:.6rem;padding:0 .25rem;border-radius:8px}
+@media(max-width:600px){.lcard{flex-direction:column}.lc-img{width:100%;height:150px}.thumb-md{width:96px;height:64px}}
 </style>
 </head>
 <body>
@@ -75,7 +113,9 @@ label{font-size:.8rem;color:var(--muted);display:block;margin-bottom:.1rem}
   <main id="main"></main>
 </div>
 <div id="toast" class="toast"></div>
+<button class="bugbtn" id="bugbtn" onclick="bugReport()">⚠ Hiba jelzése</button>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <script>
 const SUPABASE_URL='https://mbstluwcnskwwxzyotwa.supabase.co';
 const SUPABASE_KEY='sb_publishable_99ouBRzc7xe5b6kr82lxIQ_Xl1kOPfE';
@@ -99,11 +139,11 @@ async function busy(btn,fn){if(btn){btn.disabled=true;var o=btn.textContent;btn.
 $('#loginBtn').onclick=async()=>{$('#loginErr').textContent='';const {error}=await sb.auth.signInWithPassword({email:$('#email').value.trim(),password:$('#password').value});if(error){$('#loginErr').textContent='Hibás e-mail vagy jelszó.';return;}boot();};
 $('#password').addEventListener('keydown',e=>{if(e.key==='Enter')$('#loginBtn').click();});
 $('#logoutBtn').onclick=async()=>{await sb.auth.signOut();location.reload();};
-async function boot(){const {data:{session}}=await sb.auth.getSession();if(!session){$('#login').classList.remove('hidden');$('#app').classList.add('hidden');return;}
+async function boot(){document.body.removeAttribute('data-app-ready');const {data:{session}}=await sb.auth.getSession();if(!session){$('#login').classList.remove('hidden');$('#app').classList.add('hidden');return;}
   ME=session.user.email;$('#login').classList.add('hidden');$('#app').classList.remove('hidden');$('#whoami').textContent=ME;
-  await reloadContacts();buildNav();route('dashboard');}
+  await reloadContacts();buildNav();await route('dashboard');document.body.dataset.appReady='true';}
 async function reloadContacts(){CONTACTS=(await sb.from('contacts').select('id,nev').order('nev')).data||[];}
-const VIEWS=[['dashboard','Műszerfal'],['leads','Lead ingatlanok'],['properties','Ingatlanok'],['searches','Keresett ingatlanok'],['matching','Párosítás'],['recos','Kiajánlások'],['tasks','Feladatok'],['contacts','Kapcsolatok']];
+const VIEWS=[['dashboard','Műszerfal'],['tasks','Feladatok'],['leads','Lead-ek'],['properties','Megbízások'],['searches','Keresések'],['matching','Párosítás'],['recos','Kiajánlások'],['contacts','Ügyfelek']];
 function buildNav(){$('#nav').innerHTML=VIEWS.map(([k,l])=>`<a data-v="${k}">${l}</a>`).join('');document.querySelectorAll('#nav a').forEach(a=>a.onclick=()=>route(a.dataset.v));}
 function setActive(v){document.querySelectorAll('#nav a').forEach(a=>a.classList.toggle('active',a.dataset.v===v));}
 async function route(v){setActive(v);const m=$('#main');m.innerHTML='<p class="muted">Betöltés…</p>';try{await ({dashboard:vDashboard,leads:vLeads,properties:vProperties,searches:vSearches,matching:vMatching,recos:vRecos,tasks:vTasks,contacts:vContacts}[v])(m);}catch(e){m.innerHTML='<p class="err">Hiba: '+esc(e.message)+'</p>';}}
@@ -117,8 +157,9 @@ async function resolvePerson(pfx){const nev=($('#'+pfx+'_nev')?.value||'').trim(
 const isCRM=t=>!['egyeb','magan'].includes(t.targy_tabla);
 const due=t=>t.mikorra&&t.mikorra<=today();
 async function vDashboard(m){
-  const tasks=(await sb.from('tasks').select('*').neq('statusz','Kész').order('mikorra',{ascending:true,nullsFirst:false})).data||[];
+  const tasks=(await sb.from('tasks').select('*').eq('statusz','Aktív').order('mikorra',{ascending:true,nullsFirst:false})).data||[];
   const leads=(await sb.from('leads').select('*,contacts(nev)')).data||[];
+  const CM=await coverMaps();
   const intez=[...new Set(tasks.map(t=>t.gazda).filter(Boolean))];const tip=[...new Set(tasks.map(t=>t.tipus).filter(Boolean))];
   const need=leads.filter(l=>l.allapot==='Aktív'&&(!l.kovetkezo_lepes||!l.kovetkezo_datum));
   m.innerHTML=`<h2 class="view">Műszerfal</h2>
@@ -129,10 +170,11 @@ async function vDashboard(m){
      <select id="d_t"><option value="">Minden típus</option>${tip.map(t=>`<option>${esc(t)}</option>`).join('')}</select>
      <label class="small" style="margin:0"><input type="checkbox" id="d_d" checked style="width:auto"> csak esedékes/lejárt</label></div>
    <div id="d_tasks"></div>
-   <div class="section"><h4>Leadek, amelyek intézkedést igényelnek</h4>${need.length?tbl(['Kapcsolat','Hely/típus','Miért'],need.map(l=>[`<span class="row-link" onclick="openLead('${l.id}')">${esc(l.contacts?.nev||'–')}</span>`,esc(l.telepules||l.ingatlan_tipus||''),`<span class="pill danger">${!l.kovetkezo_lepes?'nincs következő lépés':'nincs dátum'}</span>`])):'<p class="muted">Nincs ilyen.</p>'}</div>`;
+   <div class="section"><h4>Leadek, amelyek intézkedést igényelnek</h4>${need.length?tbl(['','Kapcsolat','Hely/típus','Miért'],need.map(l=>[miniThumb(CM.leadCover[l.id]),`<span class="row-link" onclick="openLead('${l.id}')">${esc(l.contacts?.nev||'–')}</span>`,esc(l.telepules||l.ingatlan_tipus||''),`<span class="pill danger">${!l.kovetkezo_lepes?'nincs következő lépés':'nincs dátum'}</span>`])):'<p class="muted">Nincs ilyen.</p>'}</div>`;
   const draw=()=>{const n=$('#d_n').value,i=$('#d_i').value,tp=$('#d_t').value,d=$('#d_d').checked;
     const rows=tasks.filter(t=>{const cat=t.targy_tabla==='magan'?'magan':t.targy_tabla==='egyeb'?'egyeb':'crm';if(n!=='mind'&&cat!==n)return false;if(i&&t.gazda!==i)return false;if(tp&&t.tipus!==tp)return false;if(d&&!due(t))return false;return true;});
-    $('#d_tasks').innerHTML=rows.length?tbl(['Mikorra','Következő lépés','Típus','Kategória','Intézi'],rows.map(t=>[esc(t.mikorra||'–'),esc(t.kovetkezo_lepes||''),esc(t.tipus||''),esc(t.targy_tabla||'CRM'),esc(t.gazda||'')])):'<p class="muted">Nincs a szűrőnek megfelelő teendő.</p>';};
+    $('#d_tasks').innerHTML=rows.length?tbl(['','Mikorra','Következő lépés','Típus','Kategória','Intézi'],rows.map(t=>[`<span onclick="openTask('${t.id}')" style="cursor:pointer">${miniThumb(taskCover(t,CM))}</span>`,esc(t.mikorra||'–'),`<span class="row-link" onclick="openTask('${t.id}')">${esc(t.kovetkezo_lepes||'(feladat)')}</span>`,esc(t.tipus||''),esc(t.targy_tabla||'CRM'),esc(t.gazda||'')])):'<p class="muted">Nincs a szűrőnek megfelelő teendő.</p>';};
+  window._CM=CM;
   ['d_n','d_i','d_t','d_d'].forEach(id=>$('#'+id).onchange=draw);draw();
 }
 function tbl(head,rows){return `<div class="tblwrap"><table><tr>${head.map(h=>`<th>${h}</th>`).join('')}</tr>${rows.map(r=>`<tr>${r.map(c=>`<td>${c}</td>`).join('')}</tr>`).join('')}</table></div>`;}
@@ -140,15 +182,28 @@ function tbl(head,rows){return `<div class="tblwrap"><table><tr>${head.map(h=>`<
 // ---------- Leads (Lead ingatlanok) ----------
 function needAct(l){return l.allapot==='Aktív'&&(!l.kovetkezo_lepes||!l.kovetkezo_datum);}
 async function vLeads(m){
-  const l=(await sb.from('leads').select('*,contacts(nev)').order('kovetkezo_datum',{ascending:true,nullsFirst:true})).data||[];window._leads=l;
-  m.innerHTML=`<h2 class="view">Lead ingatlanok</h2><div class="bar"><button class="btn-gold" onclick="newLead()">+ Új lead ingatlan</button></div>
-   ${tbl(['Ingatlan / hely','Tulajdonos','Következő lépés','Mikor','Állapot'],l.map(x=>[`<span class="row-link" onclick="openLead('${x.id}')">${esc(x.telepules||x.ingatlan_tipus||'Lead')}</span>`,esc(x.contacts?.nev||'–'),esc(x.kovetkezo_lepes||''),x.kovetkezo_datum?esc(x.kovetkezo_datum):'',needAct(x)?'<span class="pill danger">Intézkedést igényel</span>':`<span class="pill info">${esc(x.allapot||'')}</span>`]))}`;
+  const l=(await sb.from('leads').select('*,contacts(nev),lead_photos(storage_path),properties(property_photos(storage_path,borito,sorrend))').order('kovetkezo_datum',{ascending:true,nullsFirst:true})).data||[];window._leads=l;
+  m.innerHTML=`<h2 class="view">Lead-ek</h2><div class="bar"><button class="btn-gold" onclick="newLead()">+ Új lead ingatlan</button></div>
+   <div>${l.length?l.map(x=>{const k=leadCoverKey(x);const cim=esc(x.telepules||x.ingatlan_tipus||'Lead');
+     return `<div class="lcard">
+       <img class="lc-img" loading="lazy" src="${k?esc(fotoUrl(k)):PH_IMG}" onclick="openLead('${x.id}')" onerror="this.onerror=null;this.src=PH_IMG">
+       <div class="lc-body"><h3 onclick="openLead('${x.id}')">${cim}</h3>
+         <div class="meta">${esc(x.ingatlan_tipus||'')}${x.elado_kiado?' · '+esc(x.elado_kiado):''}${x.hirdetesi_ar?' · '+ft(x.hirdetesi_ar):''}<br>
+         Tulajdonos: ${esc(x.contacts?.nev||'–')}<br>
+         ${x.kovetkezo_lepes?'Következő: '+esc(x.kovetkezo_lepes)+(x.kovetkezo_datum?' ('+esc(x.kovetkezo_datum)+')':''):'<span class="muted">nincs következő lépés</span>'}</div>
+         <div style="margin-top:.25rem">${needAct(x)?'<span class="pill danger">Intézkedést igényel</span>':`<span class="pill info">${esc(x.allapot||'')}</span>`}</div>
+       </div></div>`;}).join(''):'<p class="muted">Nincs lead.</p>'}</div>`;
 }
 window.newLead=()=>leadForm();
 window.openLead=async id=>{const l=(window._leads||[]).find(x=>x.id===id)||(await sb.from('leads').select('*,contacts(nev)').eq('id',id).single()).data;
   const acts=(await sb.from('lead_activities').select('*').eq('lead_id',id).order('letrehozva',{ascending:false})).data||[];
+  const lp=(await sb.from('lead_photos').select('storage_path').eq('lead_id',id).maybeSingle()).data;
   modal(`<h3>Lead ingatlan — ${esc(l.telepules||l.ingatlan_tipus||'')}</h3>
    ${needAct(l)?'<div class="pill danger">Intézkedést igényel: hiányzik a következő lépés/dátum</div>':''}
+   <div class="section"><h4>Azonosítókép</h4>
+     ${lp&&lp.storage_path?`<img class="leadphoto" src="${esc(fotoUrl(lp.storage_path))}" onclick="galleryOpen(['${esc(lp.storage_path)}'],0)" onerror="this.onerror=null;this.src=PH_IMG">`:'<div class="muted small" style="margin-bottom:.4rem">Nincs azonosítókép — a képről egy pillantással felismerhető a lead.</div>'}
+     <div class="bar"><label class="btn-ghost btn-sm filelbl">${lp&&lp.storage_path?'Kép cseréje':'Kép feltöltése'}<input type="file" accept="image/*" capture="environment" onchange="leadPhotoPick('${id}',this)"></label>
+       ${lp&&lp.storage_path?`<button class="btn-ghost btn-sm" onclick="leadPhotoDel('${id}')">Törlés</button>`:''}</div></div>
    <div class="two"><div><label>Típus</label>${esc(l.ingatlan_tipus||'–')}</div><div><label>Ügylet</label>${esc(l.elado_kiado||'–')}</div></div>
    <div class="two"><div><label>Hely</label>${esc(l.telepules||'–')}</div><div><label>Hirdetési ár</label>${ft(l.hirdetesi_ar)}</div></div>
    <div><label>Tulajdonos</label>${esc(l.contacts?.nev||'–')}</div>
@@ -180,6 +235,7 @@ function leadForm(id){const l=id?(window._leads||[]).find(x=>x.id===id)||{}:{};c
      <div class="two"><div><label>Hirdetési ár (teljes Ft)</label><input id="l_ar" type="number" value="${l.hirdetesi_ar??''}"/></div><div><label>Leadforrás</label><select id="l_forras">${['Hideghívás','Korábbi ügyfél','Személyes kapcsolat','Másik ingatlan miatt hívott','Ügyféloldali megkeresés','Egyéb'].map(f=>`<option ${l.forras===f?'selected':''}>${f}</option>`).join('')}</select></div></div>
      <label>Tulajdonosi hirdetés link</label><input id="l_link" value="${esc(l.tulajdonosi_hirdetes_link||'')}"/>
      <label>Megjegyzés</label><textarea id="l_megj">${esc(l.megjegyzes||'')}</textarea>
+     <label>Azonosítókép (opcionális — gépről vagy telefon kamerájával)</label><input type="file" id="l_foto" accept="image/*" capture="environment"/>
      <div class="two"><div><label>Következő feladat</label><input id="l_next" value="${esc(l.kovetkezo_lepes||'')}"/></div><div><label>Időpont</label><input type="date" id="l_date" value="${l.kovetkezo_datum||''}"/></div></div>
      ${!id?'<label>Feladatot intézi</label><select id="l_who">'+INTEZ.map(w=>`<option>${w}</option>`).join('')+'</select>':''}</div>
    <div class="section"><h4>Tulajdonos hozzákapcsolása</h4>${nf?personPicker('lp',l.contact_id):'<div class="small muted">A tulajdonos a kapcsolat: '+esc((CONTACTS.find(c=>c.id===l.contact_id)||{}).nev||'–')+'</div>'+personPicker('lp',l.contact_id)}</div>
@@ -192,6 +248,8 @@ window.saveLead=(id,btn)=>busy(btn,async()=>{const num=v=>v===''?null:Number(v);
   if(id){const r=await sb.from('leads').update(rec).eq('id',id);if(r.error)throw r.error;}
   else{const r=await sb.from('leads').insert(rec).select('id').single();if(r.error)throw r.error;lid=r.data.id;}
   if(rec.kovetkezo_lepes&&rec.kovetkezo_datum)await upsertTask('lead',lid,rec.kovetkezo_lepes,rec.kovetkezo_datum,($('#l_who')?.value)||'Közös');
+  const ff=$('#l_foto')&&$('#l_foto').files[0];
+  if(ff&&IMG_RE.test(ff.type)){try{await saveLeadPhoto(lid,ff);}catch(e){toast('Kép mentése nem sikerült: '+e.message);}}
   closeModal();toast('Lead mentve');route('leads');});
 window.mandateDialog=id=>{const l=(window._leads||[]).find(x=>x.id===id)||{};
   modal(`<h3>Leadből megbízás</h3><p class="small muted">Az ingatlan- és lead-adatok, a tulajdonos és az előzmények átkerülnek. A művelet biztonságos és nem fut le kétszer.</p>
@@ -201,7 +259,7 @@ window.mandateDialog=id=>{const l=(window._leads||[]).find(x=>x.id===id)||{};
    <div class="bar"><button class="btn-gold" id="mm_btn" onclick="doMandate('${id}',this)">Megbízás létrehozása</button><button class="btn-ghost" onclick="closeModal()">Mégse</button></div>`);};
 window.doMandate=(id,btn)=>busy(btn,async()=>{const num=v=>v===''?null:Number(v);
   const {data,error}=await sb.rpc('fn_lead_to_mandate',{p_lead:id,p_kezeles:$('#mm_kez').value,p_jelleg:$('#mm_jel').value,p_ugylet:$('#mm_uk').value,p_iranyar:num($('#mm_ar').value),p_szerzodes:$('#mm_d').value||null,p_lejarat:$('#mm_l').value||null});
-  if(error)throw error;closeModal();toast('Megbízás létrehozva (biztonságos)');route('properties');});
+  if(error)throw error;let trMsg='';if(data){const tr=await transferLeadPhoto(id,data);if(tr&&tr.ok===false)trMsg=' — a lead képének átvitele nem sikerült';}closeModal();toast('Megbízás létrehozva'+trMsg);route('properties');});
 
 // ---------- Tasks helper ----------
 async function upsertTask(targy,tid,next,date,who){
@@ -211,33 +269,70 @@ async function upsertTask(targy,tid,next,date,who){
 
 // ---------- Tasks view ----------
 async function vTasks(m){
-  const t=(await sb.from('tasks').select('*').order('mikorra',{ascending:true,nullsFirst:false})).data||[];
-  m.innerHTML=`<h2 class="view">Feladatok</h2><div class="bar"><select id="t_n"><option value="">Mind</option><option value="crm">CRM</option><option value="egyeb">Egyéb</option><option value="magan">Magán</option></select><select id="t_i"><option value="">Bárki intézi</option>${INTEZ.map(w=>`<option>${w}</option>`).join('')}</select><label class="small" style="margin:0"><input type="checkbox" id="t_open" checked style="width:auto"> csak nyitott</label></div><div id="t_list"></div>`;
+  const t=(await sb.from('tasks').select('*').order('mikorra',{ascending:true,nullsFirst:false})).data||[];window._tasks=t;
+  const CM=await coverMaps();window._CM=CM;
+  m.innerHTML=`<h2 class="view">Feladatok</h2><div class="bar"><button class="btn-gold" onclick="taskForm()">+ Új feladat</button>
+    <select id="t_n"><option value="">Mind</option><option value="crm">CRM</option><option value="egyeb">Egyéb</option><option value="magan">Magán</option></select>
+    <select id="t_i"><option value="">Bárki intézi</option>${INTEZ.map(w=>`<option>${w}</option>`).join('')}</select>
+    <label class="small" style="margin:0"><input type="checkbox" id="t_open" checked style="width:auto"> csak nyitott</label></div><div id="t_list"></div>`;
   const draw=()=>{const n=$('#t_n').value,i=$('#t_i').value,op=$('#t_open').checked;
-    const rows=t.filter(x=>{const cat=x.targy_tabla==='magan'?'magan':x.targy_tabla==='egyeb'?'egyeb':'crm';if(n&&cat!==n)return false;if(i&&x.gazda!==i)return false;if(op&&x.statusz==='Kész')return false;return true;});
-    $('#t_list').innerHTML=tbl(['Mikorra','Következő lépés','Kategória','Intézi','Állapot',''],rows.map(x=>[esc(x.mikorra||'–'),esc(x.kovetkezo_lepes||''),esc(x.targy_tabla||'CRM'),esc(x.gazda||''),esc(x.statusz||''),x.statusz!=='Kész'?`<button class="btn-ghost btn-sm" onclick="doneTask('${x.id}')">Kész</button>`:'']));};
+    const rows=t.filter(x=>{const cat=x.targy_tabla==='magan'?'magan':x.targy_tabla==='egyeb'?'egyeb':'crm';if(n&&cat!==n)return false;if(i&&x.gazda!==i)return false;if(op&&x.statusz!=='Aktív')return false;return true;});
+    $('#t_list').innerHTML=rows.length?tbl(['','Következő lépés','Mikorra','Kategória','Intézi','Állapot',''],rows.map(x=>[`<span onclick="openTask('${x.id}')" style="cursor:pointer">${imgMd(taskCover(x,CM))}</span>`,`<span class="row-link" onclick="openTask('${x.id}')">${esc(x.kovetkezo_lepes||'(feladat)')}</span>`,esc(x.mikorra||'–'),esc(x.targy_tabla||'CRM'),esc(x.gazda||''),esc(x.statusz||''),x.statusz==='Aktív'?`<button class="btn-ghost btn-sm" onclick="event.stopPropagation();doneTask('${x.id}')">Kész</button>`:''])):'<p class="muted">Nincs a szűrőnek megfelelő feladat.</p>';};
   ['t_n','t_i','t_open'].forEach(id=>$('#'+id).onchange=draw);draw();
 }
-window.doneTask=async id=>{await sb.from('tasks').update({statusz:'Kész',elvegezve:new Date().toISOString()}).eq('id',id);toast('Kész');route('tasks');};
+window.doneTask=async id=>{const r=await sb.from('tasks').update({statusz:'Kész',elvegezve:new Date().toISOString()}).eq('id',id);if(r.error){toast('Hiba: '+r.error.message);return;}toast('Kész');route('tasks');};
+window.openTask=async id=>{const t=(await sb.from('tasks').select('*').eq('id',id).single()).data;if(!t){toast('Feladat nem található');return;}
+  const CM=window._CM||await coverMaps();const cover=taskCover(t,CM);
+  let linkName='',linkOpen='';
+  if(t.targy_tabla==='lead'){const l=(await sb.from('leads').select('telepules,ingatlan_tipus,contacts(nev)').eq('id',t.targy_id).maybeSingle()).data;if(l)linkName=(l.telepules||l.ingatlan_tipus||'Lead')+(l.contacts?.nev?' — '+l.contacts.nev:'');linkOpen=`<button class="btn-ghost btn-sm" onclick="closeModal();openLead('${t.targy_id}')">Kapcsolt lead megnyitása</button>`;}
+  else if(t.targy_tabla==='property'||t.targy_tabla==='ingatlan'){const p=(await sb.from('properties').select('cim').eq('id',t.targy_id).maybeSingle()).data;if(p)linkName=p.cim||'Ingatlan';linkOpen=`<button class="btn-ghost btn-sm" onclick="closeModal();openProp('${t.targy_id}')">Kapcsolt ingatlan megnyitása</button>`;}
+  const cat=t.targy_tabla==='magan'?'Magán':t.targy_tabla==='egyeb'?'Egyéb':'CRM';
+  modal(`<h3>Feladat</h3>
+   <div style="display:flex;gap:.7rem;align-items:flex-start;margin-bottom:.4rem">
+     <img class="thumb-md" style="width:130px;height:88px" src="${cover?esc(fotoUrl(cover)):PH_IMG}" onclick="${cover?`galleryOpen(['${esc(cover)}'],0)`:''}" onerror="this.onerror=null;this.src=PH_IMG">
+     <div style="flex:1"><div><label>Kapcsolt ügy</label>${esc(linkName||'– (általános feladat)')}</div>
+       <div><label>Kategória / típus</label>${cat}${t.tipus?' · '+esc(t.tipus):''}</div>
+       <div><label>Állapot</label><span class="pill ${t.statusz==='Aktív'?'info':t.statusz==='Kész'?'ok':''}">${esc(t.statusz||'')}</span></div></div></div>
+   <label>Következő lépés / feladat szövege</label><input id="tk_next" value="${esc(t.kovetkezo_lepes||'')}"/>
+   <div class="two"><div><label>Határidő</label><input type="date" id="tk_date" value="${t.mikorra||''}"/></div><div><label>Intézi</label><select id="tk_who">${INTEZ.map(w=>`<option ${t.gazda===w?'selected':''}>${w}</option>`).join('')}</select></div></div>
+   <div class="bar"><button class="btn-primary" id="tk_save" onclick="saveTask('${id}',this)">Mentés</button>
+     ${t.statusz==='Aktív'?`<button class="btn-gold" onclick="setTaskStatus('${id}','Kész')">Készre állítás</button>`:`<button class="btn-ghost" onclick="setTaskStatus('${id}','Aktív')">Újranyitás / átütemezés</button>`}
+     ${linkOpen}<button class="btn-ghost" onclick="taskForm(null,'${t.targy_tabla||''}','${t.targy_id||''}')">Új feladat</button><button class="btn-ghost" onclick="closeModal()">Bezár</button></div>`);
+};
+window.saveTask=(id,btn)=>busy(btn,async()=>{const rec={kovetkezo_lepes:$('#tk_next').value.trim()||null,mikorra:$('#tk_date').value||null,gazda:$('#tk_who').value};const r=await sb.from('tasks').update(rec).eq('id',id);if(r.error)throw r.error;closeModal();toast('Feladat mentve');route('tasks');});
+window.setTaskStatus=async(id,st)=>{const upd={statusz:st};if(st==='Kész')upd.elvegezve=new Date().toISOString();const r=await sb.from('tasks').update(upd).eq('id',id);if(r.error){toast('Hiba: '+r.error.message);return;}closeModal();toast(st==='Kész'?'Készre állítva':'Újranyitva');route('tasks');};
+window.taskForm=(id,ttabla,tid)=>{const t=id?(window._tasks||[]).find(x=>x.id===id)||{}:{};
+  modal(`<h3>${id?'Feladat szerkesztése':'Új feladat'}</h3>
+   <label>Feladat szövege</label><input id="nt_next" value="${esc(t.kovetkezo_lepes||'')}"/>
+   <div class="two"><div><label>Határidő</label><input type="date" id="nt_date" value="${t.mikorra||''}"/></div><div><label>Intézi</label><select id="nt_who">${INTEZ.map(w=>`<option ${t.gazda===w?'selected':''}>${w}</option>`).join('')}</select></div></div>
+   <div class="two"><div><label>Típus</label><input id="nt_tip" value="${esc(t.tipus||'Teendő')}"/></div><div><label>Kategória</label><select id="nt_cat">${[['crm','CRM'],['egyeb','Egyéb'],['magan','Magán']].map(([v,l])=>`<option value="${v}" ${((t.targy_tabla==='magan'?'magan':t.targy_tabla==='egyeb'?'egyeb':'crm')===v)?'selected':''}>${l}</option>`).join('')}</select></div></div>
+   ${ttabla&&tid?`<div class="small muted">Kapcsolt ügyhöz kötve.</div>`:''}
+   <div class="bar"><button class="btn-primary" id="nt_btn" onclick="saveNewTask('${id||''}','${ttabla||''}','${tid||''}',this)">Mentés</button><button class="btn-ghost" onclick="closeModal()">Mégse</button></div>`);};
+window.saveNewTask=(id,ttabla,tid,btn)=>busy(btn,async()=>{const cat=$('#nt_cat').value;
+  const rec={kovetkezo_lepes:$('#nt_next').value.trim()||null,mikorra:$('#nt_date').value||null,gazda:$('#nt_who').value,tipus:$('#nt_tip').value.trim()||'Teendő',statusz:'Aktív'};
+  if(!rec.kovetkezo_lepes)throw new Error('A feladat szövege kötelező');
+  if(id){const r=await sb.from('tasks').update(rec).eq('id',id);if(r.error)throw r.error;}
+  else{rec.targy_tabla=(ttabla&&tid)?ttabla:(cat==='egyeb'?'egyeb':cat==='magan'?'magan':'altalanos');rec.targy_id=(ttabla&&tid)?tid:null;const r=await sb.from('tasks').insert(rec);if(r.error)throw r.error;}
+  closeModal();toast('Feladat mentve');route('tasks');});
 
 // ---------- Properties ----------
 async function vProperties(m){
-  const p=(await sb.from('properties').select('*,mandates(id,ugylet,iranyar,statusz,kezelesi_kategoria,szerzodes_jelleg),property_photos(storage_path,borito,sorrend),property_owners(contacts(nev))').order('letrehozva',{ascending:false})).data||[];window._props=p;
+  const p=(await sb.from('properties').select('*,mandates(id,ugylet,iranyar,statusz,kezelesi_kategoria,szerzodes_jelleg),property_photos(storage_path,borito,sorrend),property_owners(id,contact_id,contacts(id,nev))').order('letrehozva',{ascending:false})).data||[];window._props=p;
   m.innerHTML=`<h2 class="view">Ingatlanok / megbízások</h2><div class="bar"><input id="ps" placeholder="Keresés cím…"/><button class="btn-gold" onclick="propForm()">+ Új ingatlan / megbízás</button></div><div id="plist" class="grid"></div>`;
   const draw=()=>{const s=($('#ps').value||'').toLowerCase();
     $('#plist').innerHTML=p.filter(x=>!s||(x.cim||'').toLowerCase().includes(s)).map(x=>{const md=(x.mandates||[])[0]||{};const cover=coverPhoto(x);const own=(x.property_owners||[]).map(o=>o.contacts?.nev).filter(Boolean).join(', ');
-      return `<div class="card"><div class="thumb" onclick="openProp('${x.id}')"><img src="${esc(cover)||PH_IMG}" alt="" onerror="this.onerror=null;this.src=PH_IMG"></div>
+      return `<div class="card"><div class="thumb" onclick="openProp('${x.id}')"><img loading="lazy" src="${cover?esc(fotoUrl(cover)):PH_IMG}" alt="" onerror="this.onerror=null;this.src=PH_IMG"></div>
         <div class="pad"><h3 onclick="openProp('${x.id}')">${esc(x.cim||'(cím nélkül)')}</h3>
         <div class="meta">${esc(x.ingatlan_tipus||'')} ${x.netto_alap?'· '+x.netto_alap+' m²':''}<br>
         <span class="pill ${md.ugylet==='Kiadó'?'info':'gold'}">${esc(md.ugylet||'Megbízás')}</span>${md.kezelesi_kategoria?`<span class="pill ${md.kezelesi_kategoria==='Háttér'?'warn':'ok'}">${esc(md.kezelesi_kategoria)}</span>`:''}<b style="color:var(--navy)"> ${ft(md.iranyar)}</b>${own?'<br>Tulajdonos: '+esc(own):''}</div></div></div>`;}).join('')||'<p class="muted">Nincs találat.</p>';};
   $('#ps').oninput=draw;draw();
 }
 function coverPhoto(x){const ps=(x.property_photos||[]).slice().sort((a,b)=>(b.borito?1:0)-(a.borito?1:0)||(a.sorrend||0)-(b.sorrend||0));return ps[0]?.storage_path||'';}
-window.openProp=async id=>{const x=(window._props||[]).find(p=>p.id===id)||(await sb.from('properties').select('*,mandates(id,ugylet,iranyar,statusz,kezelesi_kategoria,szerzodes_jelleg,szerzodes_datum,lejarat),property_photos(storage_path,borito,sorrend),property_owners(id,contacts(id,nev))').eq('id',id).single()).data;const md=(x.mandates||[])[0]||{};
-  const photos=(x.property_photos||[]).slice().sort((a,b)=>(b.borito?1:0)-(a.borito?1:0)||(a.sorrend||0)-(b.sorrend||0)).map(f=>f.storage_path).filter(Boolean);
+window.openProp=async id=>{const x=(await sb.from('properties').select('*,mandates(id,ugylet,iranyar,statusz,kezelesi_kategoria,szerzodes_jelleg,szerzodes_datum,lejarat),property_photos(storage_path,borito,sorrend),property_owners(id,contact_id,contacts(id,nev))').eq('id',id).single()).data;if(!x){toast('Nem található');return;}const md=(x.mandates||[])[0]||{};
+  const photos=(x.property_photos||[]).slice().sort((a,b)=>(b.borito?1:0)-(a.borito?1:0)||(a.sorrend||0)-(b.sorrend||0)).map(f=>f.storage_path).filter(Boolean);window._opPhotos=photos;
   const owners=(x.property_owners||[]);
   modal(`<h3>${esc(x.cim||'Ingatlan')}</h3>
-   <div class="thumb" style="border-radius:10px;margin-bottom:.6rem" onclick="${photos.length?`lightbox('${esc(photos[0])}')`:''}"><img src="${esc(photos[0])||PH_IMG}" onerror="this.onerror=null;this.src=PH_IMG"></div>
+   <div class="thumb" style="border-radius:10px;margin-bottom:.6rem" onclick="${photos.length?'galleryOpen(window._opPhotos,0)':''}"><img src="${photos[0]?esc(fotoUrl(photos[0])):PH_IMG}" onerror="this.onerror=null;this.src=PH_IMG"></div>
    <div class="two"><div><label>Típus</label>${esc(x.ingatlan_tipus||'–')}</div><div><label>Alapterület</label>${x.netto_alap?x.netto_alap+' m²':'–'}</div></div>
    <div class="two"><div><label>Telek</label>${x.telek?x.telek+' m²':'–'}</div><div><label>Szobaszám</label>${x.szobak??'–'}</div></div>
    <div class="two"><div><label>Ügylet</label>${esc(md.ugylet||'–')}</div><div><label>Irányár</label>${ft(md.iranyar)}</div></div>
@@ -245,12 +340,14 @@ window.openProp=async id=>{const x=(window._props||[]).find(p=>p.id===id)||(awai
    ${x.jogi_megjegyzes?`<div><label>Jogi megjegyzés</label>${esc(x.jogi_megjegyzes)}</div>`:''}
    <div class="section"><h4>Tulajdonosok (${owners.length})</h4>${owners.map(o=>`<div class="small">• ${esc(o.contacts?.nev||'')} <button class="copy" onclick="rmOwner('${o.id}','${id}')">✕</button></div>`).join('')||'<span class="muted small">nincs</span>'}
      <div class="subform">${personPicker('ow',null)}<button class="btn-ghost btn-sm" onclick="addOwner('${id}',this)">+ Tulajdonos hozzáadása</button></div></div>
-   <div class="section"><h4>Fotógaléria (${photos.length})</h4><div class="gallery">${photos.map(f=>`<img src="${esc(f)}" onclick="lightbox('${esc(f)}')" onerror="this.style.display='none'">`).join('')||'<span class="muted small">nincs</span>'}</div><div class="small muted" style="margin-top:.3rem">Fotófeltöltés/sorrend/borító a következő fejlesztési blokkban.</div></div>
+   <div class="section"><h4>Fotók</h4><div id="photoMgr"><span class="muted small">Betöltés…</span></div></div>
+   <div class="section"><h4>Dokumentumok</h4><div id="docMgr"><span class="muted small">Betöltés…</span></div></div>
    <div class="bar"><button class="btn-ghost" onclick="propForm('${id}')">Ingatlan/megbízás szerkesztése</button><button class="btn-ghost" onclick="closeModal()">Bezár</button></div>`);
+  loadPhotoMgr(id);loadDocMgr(id);
 };
-window.rmOwner=async(oid,pid)=>{if(!confirm('Tulajdonos eltávolítása erről az ingatlanról?'))return;await sb.from('property_owners').delete().eq('id',oid);toast('Eltávolítva');openProp(pid);};
-window.addOwner=(pid,btn)=>busy(btn,async()=>{const cid=await resolvePerson('ow');if(!cid)return toast('Válassz vagy adj meg személyt');await sb.from('property_owners').insert({property_id:pid,contact_id:cid});toast('Tulajdonos hozzáadva');openProp(pid);});
-function propForm(id){const x=id?(window._props||[]).find(p=>p.id===id)||{}:{};const md=(x.mandates||[])[0]||{};const nf=!id;
+window.rmOwner=async(oid,pid)=>{if(!oid||oid==='undefined'){toast('Hiba: hiányzó kapcsolóazonosító');return;}if(!confirm('Tulajdonos eltávolítása erről az ingatlanról?'))return;const r=await sb.from('property_owners').delete().eq('id',oid);if(r.error){toast('Nem sikerült: '+r.error.message);return;}toast('Eltávolítva');openProp(pid);};
+window.addOwner=(pid,btn)=>busy(btn,async()=>{const cid=await resolvePerson('ow');if(!cid)return toast('Válassz vagy adj meg személyt');const r=await sb.from('property_owners').insert({property_id:pid,contact_id:cid});if(r.error){toast(r.error.code==='23505'?'Ez a személy már hozzá van kapcsolva az ingatlanhoz.':'Hiba: '+r.error.message);return;}toast('Tulajdonos hozzáadva');openProp(pid);});
+async function propForm(id){let x={};if(id){x=(await sb.from('properties').select('*,mandates(id,ugylet,iranyar,statusz,kezelesi_kategoria,szerzodes_jelleg,szerzodes_datum,lejarat)').eq('id',id).single()).data||{};}const md=(x.mandates||[])[0]||{};const nf=!id;
   modal(`<h3>${id?'Ingatlan / megbízás szerkesztése':'Új ingatlan / megbízás'}</h3>
    <div class="section"><h4>Ingatlan (fizikai adatok)</h4>
      <div class="two"><div><label>Cím</label><input id="p_cim" value="${esc(x.cim||'')}"/></div><div><label>HRSZ</label><input id="p_hrsz" value="${esc(x.hrsz||'')}"/></div></div>
@@ -307,11 +404,11 @@ window.saveSearch=(id,btn)=>busy(btn,async()=>{const num=v=>v===''?null:Number(v
 
 // ---------- Matching ----------
 async function vMatching(m){
-  const mt=(await sb.from('matches').select('*,search_requirements(telepules,ingatlan_tipus,max_ar,min_szoba,contact_id,contacts(nev)),properties(cim,ingatlan_tipus,netto_alap)').order('pontszam',{ascending:false})).data||[];
+  const mt=(await sb.from('matches').select('*,search_requirements(telepules,ingatlan_tipus,max_ar,min_szoba,contact_id,contacts(nev)),properties(cim,ingatlan_tipus,netto_alap,property_photos(storage_path,borito,sorrend))').order('pontszam',{ascending:false})).data||[];
   const groups={};mt.forEach(r=>{(groups[r.search_requirement_id]=groups[r.search_requirement_id]||[]).push(r);});
   m.innerHTML=`<h2 class="view">Párosítás</h2><div class="bar"><button class="btn-gold" id="mc_btn" onclick="recompute(this)">Párosítás újraszámolása</button><span class="muted small">${mt.length} találat</span></div>
    ${Object.values(groups).map(rows=>{const s=rows[0].search_requirements;const sid=rows[0].search_requirement_id;return `<div class="section"><h4>${esc(s?.contacts?.nev||'Kereső')} — ${esc(s?.telepules||'')} ${esc(s?.ingatlan_tipus||'')} (max ${ft(s?.max_ar)}${s?.min_szoba?', min '+s.min_szoba+' szoba':''})</h4>
-     <div class="tblwrap"><table><tr><th><input type="checkbox" onclick="document.querySelectorAll('.mchk-${sid}').forEach(c=>c.checked=this.checked)"></th><th>Ingatlan</th><th>Pont</th><th>Magyarázat</th></tr>${rows.map(r=>`<tr><td><input type="checkbox" class="mchk-${sid}" value="${r.property_id}"></td><td>${esc(r.properties?.cim||'')} <span class="muted small">${esc(r.properties?.ingatlan_tipus||'')} ${r.properties?.netto_alap?r.properties.netto_alap+' m²':''}</span></td><td><b>${r.pontszam}</b></td><td class="small">${esc(r.egyezes?.szoveg||'')} ${r.kezi_ellenorzes?'<span class="pill warn">Ár hiányzik – kézi ellenőrzés</span>':''}</td></tr>`).join('')}</table></div>
+     <div class="tblwrap"><table><tr><th><input type="checkbox" onclick="document.querySelectorAll('.mchk-${sid}').forEach(c=>c.checked=this.checked)"></th><th>Ingatlan</th><th>Pont</th><th>Magyarázat</th></tr>${rows.map(r=>`<tr><td><input type="checkbox" class="mchk-${sid}" value="${r.property_id}"></td><td>${miniThumb(pickCover(r.properties?.property_photos))} ${esc(r.properties?.cim||'')} <span class="muted small">${esc(r.properties?.ingatlan_tipus||'')} ${r.properties?.netto_alap?r.properties.netto_alap+' m²':''}</span></td><td><b>${r.pontszam}</b></td><td class="small">${esc(r.egyezes?.szoveg||'')} ${r.kezi_ellenorzes?'<span class="pill warn">Ár hiányzik – kézi ellenőrzés</span>':''}</td></tr>`).join('')}</table></div>
      <div class="bar"><button class="btn-gold btn-sm" onclick="buildReco('${sid}','${s?.contact_id||''}')">Kijelöltek kiajánlása →</button></div></div>`;}).join('')||'<p class="muted">Nincs találat. Futtasd az újraszámolást.</p>'}`;
 }
 window.recompute=btn=>busy(btn,async()=>{const {error}=await sb.rpc('fn_szamol_parositas');if(error)throw error;toast('Párosítás frissítve');route('matching');});
@@ -321,41 +418,110 @@ window.buildReco=async(sid,cid)=>{
   const ids=[...document.querySelectorAll('.mchk-'+sid+':checked')].map(c=>c.value);
   if(!ids.length)return toast('Jelölj ki legalább egy ingatlant');
   if(!cid){const s=(await sb.from('search_requirements').select('contact_id').eq('id',sid).single()).data;cid=s?.contact_id;}
-  const props=(await sb.from('properties').select('id,cim,ingatlan_tipus,netto_alap,mandates(iranyar)').in('id',ids)).data||[];
-  const prev=await sb.from('recommendation_items').select('property_id,recommendations!inner(contact_id)').in('property_id',ids).eq('recommendations.contact_id',cid);
-  const dupIds=new Set((prev.data||[]).map(x=>x.property_id));
+  const props=(await sb.from('properties').select('id,cim,ingatlan_tipus,netto_alap,mandates(iranyar),property_photos(id,storage_path,borito,sorrend,lathatosag)').in('id',ids)).data||[];
   const c=(await sb.from('contacts').select('nev,emailek').eq('id',cid).single()).data;
-  const lines=props.map(p=>`• ${p.cim||'(cím)'} – ${p.ingatlan_tipus||''}${p.netto_alap?', '+p.netto_alap+' m²':''} – ${ft((p.mandates||[])[0]?.iranyar)}`).join('\n');
-  const body=`Kedves ${c?.nev||'Érdeklődő'}!\n\nAz alábbi ingatlanokat ajánljuk figyelmébe:\n\n${lines}\n\nÜdvözlettel,\nÉrtékPont Ingatlan`;
+  const byId={};props.forEach(p=>byId[p.id]=p);const ordered=ids.map(i=>byId[i]).filter(Boolean);
+  const sel={};ordered.forEach(p=>{const pub=recoPub(p);sel[p.id]=pub.length?[pub[0].storage_path]:[];});
+  window._reco={sid,cid,c,ordered,sel};
   const email=(c?.emailek||[])[0]||'';
-  modal(`<h3>Kiajánlás előnézete</h3>
-   ${dupIds.size?`<div class="pill warn">Figyelem: ${dupIds.size} ingatlant már ajánlottál ennek az ügyfélnek.</div>`:''}
+  modal(`<h3>Kiajánlás összeállítása</h3>
    <label>Címzett</label><input id="rc_to" value="${esc(email)}"/>
    <label>Tárgy</label><input id="rc_subj" value="Ingatlanajánlat – ÉrtékPont"/>
-   <label>Szöveg</label><textarea id="rc_body" style="min-height:180px">${esc(body)}</textarea>
-   <div class="bar"><button class="btn-primary" onclick="openMail()">E-mail megnyitása</button><button class="btn-ghost" onclick="cp(document.getElementById('rc_body').value)">Szöveg másolása</button>
-     <button class="btn-gold" id="rc_btn" onclick="saveReco('${sid}','${cid}','${ids.join(',')}',this)">Kiajánlás rögzítése</button><button class="btn-ghost" onclick="closeModal()">Bezár</button></div>`);
+   <label>Bevezető szöveg</label><textarea id="rc_intro" style="min-height:66px">Kedves ${esc(c?.nev||'Érdeklődő')}!\n\nAz alábbi ingatlanokat ajánljuk figyelmébe:</textarea>
+   <div class="section"><h4>Ingatlanok és képek</h4><div class="small muted">Csak a „Webre mehet” állapotú képek választhatók; ingatlanonként legfeljebb 4. Az első a borító.</div>
+     <div id="rc_props"></div></div>
+   <div class="bar"><button class="btn-ghost" onclick="recoPreview()">Előnézet</button><button class="btn-ghost" onclick="recoPdf()">PDF letöltése</button>
+     <button class="btn-ghost" onclick="recoMail()">E-mail (szöveg)</button>
+     <button class="btn-gold" id="rc_btn" onclick="recoSave(this)">Kiajánlás rögzítése</button><button class="btn-ghost" onclick="closeModal()">Bezár</button></div>
+   <div id="rc_preview"></div>`);
+  renderRecoProps();
 };
-window.openMail=()=>{const to=$('#rc_to').value,su=encodeURIComponent($('#rc_subj').value),bo=encodeURIComponent($('#rc_body').value);window.location.href=`mailto:${to}?subject=${su}&body=${bo}`;};
-window.saveReco=(sid,cid,idsStr,btn)=>busy(btn,async()=>{const ids=idsStr.split(',').filter(Boolean);
-  const rec=await sb.from('recommendations').insert({contact_id:cid,search_requirement_id:sid,csatorna:'email'}).select('id').single();if(rec.error)throw rec.error;
-  await sb.from('recommendation_items').insert(ids.map(pid=>({recommendation_id:rec.data.id,property_id:pid})));
-  closeModal();toast('Kiajánlás rögzítve ('+ids.length+' ingatlan)');route('recos');});
-async function vRecos(m){
-  const r=(await sb.from('recommendations').select('*,contacts(nev),recommendation_items(reakcio,properties(cim))').order('datum',{ascending:false})).data||[];
-  m.innerHTML=`<h2 class="view">Kiajánlások</h2><div class="bar muted small">Új kiajánlást a Párosítás fülön indíthatsz (több ingatlan is kijelölhető).</div>
-   ${r.length?tbl(['Dátum','Ügyfél','Ingatlan(ok)','Csatorna'],r.map(x=>[esc(x.datum?.slice(0,10)||''),esc(x.contacts?.nev||''),(x.recommendation_items||[]).map(i=>esc(i.properties?.cim||'')).join(', '),esc(x.csatorna||'')])):'<p class="muted">Még nincs kiajánlás.</p>'}`;
+function recoPub(p){return (p.property_photos||[]).filter(ph=>ph.lathatosag==='nyilvanos').sort((a,b)=>(b.borito?1:0)-(a.borito?1:0)||(a.sorrend||0)-(b.sorrend||0));}
+function renderRecoProps(){const box=$('#rc_props');if(!box)return;const {ordered,sel}=window._reco;
+  box.innerHTML=ordered.map(p=>{const pub=recoPub(p);const chosen=sel[p.id]||[];
+    return `<div class="rp-prop"><b>${esc(p.cim||'(cím)')}</b> <span class="muted small">${esc(p.ingatlan_tipus||'')}${p.netto_alap?', '+p.netto_alap+' m²':''} · ${ft((p.mandates||[])[0]?.iranyar)}</span>
+      ${pub.length?`<div class="rsel-imgs">${pub.map(ph=>{const i=chosen.indexOf(ph.storage_path);return `<div class="rs-i ${i>=0?'sel':''}" onclick="recoToggle('${p.id}','${esc(ph.storage_path)}')"><img loading="lazy" src="${esc(fotoUrl(ph.storage_path))}">${i>=0?`<span class="rs-c">${i+1}</span>`:''}</div>`;}).join('')}</div>`:'<div class="pill warn">Nincs webre engedélyezett kép</div>'}</div>`;}).join('');
 }
+window.recoToggle=(pid,key)=>{const sel=window._reco.sel;const arr=sel[pid]||[];const i=arr.indexOf(key);
+  if(i>=0)arr.splice(i,1);else{if(arr.length>=4)return toast('Legfeljebb 4 kép ingatlanonként');arr.push(key);}
+  sel[pid]=arr;renderRecoProps();};
+window.recoPreview=()=>{const {ordered,sel}=window._reco;const intro=$('#rc_intro').value;
+  $('#rc_preview').innerHTML=`<div class="section"><h4>Előnézet (amit az érdeklődő lát)</h4><div class="rprev"><div style="white-space:pre-wrap">${esc(intro)}</div>
+    ${ordered.map(p=>{const keys=sel[p.id]||[];return `<div class="rp-prop"><div><b>${esc(p.cim||'(cím)')}</b> — ${esc(p.ingatlan_tipus||'')}${p.netto_alap?', '+p.netto_alap+' m²':''} — <b>${ft((p.mandates||[])[0]?.iranyar)}</b></div>
+      ${keys.length?`<div class="rp-imgs">${keys.map(k=>`<img src="${esc(fotoUrl(k))}">`).join('')}</div>`:'<div class="muted small">nincs kép kiválasztva</div>'}</div>`;}).join('')}
+    <div style="margin-top:.5rem">Üdvözlettel,<br>ÉrtékPont Ingatlan</div></div></div>`;
+  $('#rc_preview').scrollIntoView({behavior:'smooth'});};
+window.recoMail=()=>{const {ordered}=window._reco;const to=$('#rc_to').value;const subj=encodeURIComponent($('#rc_subj').value);
+  const lines=ordered.map(p=>`• ${p.cim||'(cím)'} – ${p.ingatlan_tipus||''}${p.netto_alap?', '+p.netto_alap+' m²':''} – ${ft((p.mandates||[])[0]?.iranyar)}`).join('\n');
+  const body=encodeURIComponent($('#rc_intro').value+'\n\n'+lines+'\n\nÜdvözlettel,\nÉrtékPont Ingatlan\n\n(A képes ajánlatot PDF-ben mellékeljük.)');
+  window.location.href=`mailto:${to}?subject=${subj}&body=${body}`;};
+async function keyToDataUrl(key){try{const r=await sb.storage.from(FOTO_BUCKET).download(key);if(r.error||!r.data)return null;
+  return await new Promise(res=>{const fr=new FileReader();fr.onload=()=>res(fr.result);fr.onerror=()=>res(null);fr.readAsDataURL(r.data);});}catch(e){return null;}}
+window.recoPdf=async()=>{if(!(window.jspdf&&window.jspdf.jsPDF)){toast('PDF motor nem töltött be');return;}toast('PDF készítése…');
+  const {ordered,sel}=window._reco;const {jsPDF}=window.jspdf;const doc=new jsPDF({unit:'mm',format:'a4'});
+  const W=210,M=14;let y=18;
+  doc.setFontSize(16);doc.setTextColor(31,59,87);doc.text('ÉrtékPont Ingatlan – Ajánlat',M,y);y+=8;
+  doc.setFontSize(10);doc.setTextColor(60,60,60);
+  ($('#rc_intro').value||'').split('\n').forEach(ln=>{doc.text(ln||' ',M,y);y+=5;});y+=2;
+  for(const p of ordered){if(y>250){doc.addPage();y=18;}
+    doc.setFontSize(12);doc.setTextColor(31,59,87);doc.text(String(p.cim||'(cím)'),M,y);y+=5;
+    doc.setFontSize(10);doc.setTextColor(60,60,60);doc.text(`${p.ingatlan_tipus||''}${p.netto_alap?', '+p.netto_alap+' m²':''}  –  ${ft((p.mandates||[])[0]?.iranyar)}`,M,y);y+=4;
+    const keys=sel[p.id]||[];let x=M;const iw=58,ih=42;
+    for(const k of keys){const du=await keyToDataUrl(k);if(!du)continue;if(x+iw>W-M){x=M;y+=ih+3;}if(y+ih>285){doc.addPage();y=18;x=M;}
+      const fmt=/^data:image\/png/i.test(du)?'PNG':'JPEG';try{doc.addImage(du,fmt,x,y,iw,ih);}catch(_){}x+=iw+3;}
+    y+=ih+8;}
+  doc.save('ertekpont-ajanlat.pdf');toast('PDF letöltve');};
+window.recoSave=(btn)=>busy(btn,async()=>{const {sid,cid,ordered,sel}=window._reco;
+  const rec=await sb.from('recommendations').insert({contact_id:cid,search_requirement_id:sid,csatorna:'email',targy:$('#rc_subj').value||null,szoveg:$('#rc_intro').value||null}).select('id').single();
+  if(rec.error)throw rec.error;
+  const items=ordered.map(p=>({recommendation_id:rec.data.id,property_id:p.id,ar:(p.mandates||[])[0]?.iranyar??null,cim:p.cim||null,foto_ids:sel[p.id]||[],foto_snapshot:sel[p.id]||[]}));
+  const ir=await sb.from('recommendation_items').insert(items);if(ir.error)throw ir.error;
+  closeModal();toast('Kiajánlás rögzítve ('+ordered.length+' ingatlan)');route('recos');});
+async function vRecos(m){
+  const r=(await sb.from('recommendations').select('*,contacts(nev),recommendation_items(property_id,cim,ar,foto_snapshot,reakcio,properties(cim,property_photos(storage_path,borito,sorrend)))').order('datum',{ascending:false})).data||[];window._recos=r;
+  m.innerHTML=`<h2 class="view">Kiajánlások</h2><div class="bar muted small">Új kiajánlást a Párosítás fülön indíthatsz (több ingatlan is kijelölhető).</div>
+   ${r.length?r.map(x=>{const items=x.recommendation_items||[];const covers=items.map(it=>{const snap=it.foto_snapshot;return (Array.isArray(snap)&&snap.length)?snap[0]:pickCover(it.properties?.property_photos);}).filter(Boolean).slice(0,6);
+     return `<div class="recocard" onclick="openReco('${x.id}')">
+       <div class="recostrip">${covers.length?covers.map(k=>`<img loading="lazy" src="${esc(fotoUrl(k))}" onerror="this.onerror=null;this.src=PH_IMG">`).join(''):miniThumb('')}</div>
+       <div style="flex:1"><b>${esc(x.contacts?.nev||'Ügyfél')}</b> <span class="muted small">${esc((x.datum||'').slice(0,10))} · ${esc(x.csatorna||'')}</span><br>
+         <span class="small">${items.length} ingatlan${x.reakcio?' · reakció: '+esc(x.reakcio):''}${x.kovetkezo_lepes?' · utánkövetés: '+esc(x.kovetkezo_lepes):''}</span></div>
+     </div>`;}).join(''):'<p class="muted">Még nincs kiajánlás.</p>'}`;
+}
+window.openReco=async id=>{const x=(await sb.from('recommendations').select('*,contacts(id,nev,emailek,telefonok),recommendation_items(id,property_id,cim,ar,foto_snapshot,reakcio,properties(cim,ingatlan_tipus,netto_alap,property_photos(storage_path,borito,sorrend)))').eq('id',id).single()).data;
+  if(!x){toast('Nem található');return;}const items=x.recommendation_items||[];const c=x.contacts;
+  modal(`<h3>Kiajánlás — ${esc(c?.nev||'')}</h3>
+   <div class="two"><div><label>Kiküldve</label>${esc((x.datum||'').slice(0,16).replace('T',' '))}</div><div><label>Csatorna</label>${esc(x.csatorna||'')}</div></div>
+   <div><label>Elérhetőség</label>${mailLine(c?.emailek)} ${telLine(c?.telefonok)}</div>
+   ${x.szoveg?`<div><label>Bevezető (kiküldött)</label><span style="white-space:pre-wrap">${esc(x.szoveg)}</span></div>`:''}
+   <div class="section"><h4>Ajánlott ingatlanok (${items.length})</h4>
+     ${items.map(it=>{const snap=it.foto_snapshot;const keys=(Array.isArray(snap)&&snap.length)?snap:[pickCover(it.properties?.property_photos)].filter(Boolean);
+       return `<div class="rp-prop"><div><b>${esc(it.cim||it.properties?.cim||'(cím)')}</b> <span class="muted small">${esc(it.properties?.ingatlan_tipus||'')} · ${ft(it.ar)}</span>
+         ${it.property_id?`<button class="btn-ghost btn-sm" onclick="closeModal();openProp('${it.property_id}')">Ingatlan</button>`:''}</div>
+         ${keys.length?`<div class="rp-imgs">${keys.map(k=>`<img src="${esc(fotoUrl(k))}" onclick="galleryOpen(['${esc(k)}'],0)">`).join('')}</div>`:'<div class="muted small">nincs mentett kép (a jelenlegi borító sem elérhető)</div>'}</div>`;}).join('')}</div>
+   <div class="section"><h4>Reakció és utánkövetés</h4>
+     <label>Ügyfél reakciója</label><input id="rr_reak" value="${esc(x.reakcio||'')}"/>
+     <div class="two"><div><label>Következő teendő</label><input id="rr_next" value="${esc(x.kovetkezo_lepes||'')}"/></div><div><label>Határidő</label><input type="date" id="rr_date" value="${x.kovetkezo_datum||''}"/></div></div>
+     <div class="bar"><button class="btn-primary" onclick="recoReaction('${id}',this)">Reakció mentése</button>
+       <button class="btn-ghost" onclick="recoFollowup('${id}','${items[0]?.property_id||''}',this)">Utánkövetési feladat</button></div></div>
+   <div class="bar">${c?.id?`<button class="btn-ghost" onclick="closeModal();openContact('${c.id}')">Ügyfél megnyitása</button>`:''}<button class="btn-ghost" onclick="closeModal()">Bezár</button></div>`);
+};
+window.recoReaction=(id,btn)=>busy(btn,async()=>{const r=await sb.from('recommendations').update({reakcio:$('#rr_reak').value.trim()||null,kovetkezo_lepes:$('#rr_next').value.trim()||null,kovetkezo_datum:$('#rr_date').value||null}).eq('id',id);if(r.error)throw r.error;toast('Reakció mentve');route('recos');});
+window.recoFollowup=(id,pid,btn)=>busy(btn,async()=>{const next=$('#rr_next').value.trim();const date=$('#rr_date').value||null;if(!next)return toast('Adj meg következő teendőt');
+  const rec={kovetkezo_lepes:next,mikorra:date,statusz:'Aktív',tipus:'Utánkövetés',gazda:'Közös'};
+  if(pid){rec.targy_tabla='property';rec.targy_id=pid;}else{rec.targy_tabla='altalanos';}
+  const r=await sb.from('tasks').insert(rec);if(r.error)throw r.error;
+  await sb.from('recommendations').update({kovetkezo_lepes:next,kovetkezo_datum:date}).eq('id',id);
+  toast('Utánkövetési feladat létrehozva');});
 
 // ---------- Contacts (háttér-nyilvántartás) ----------
 async function vContacts(m){
   const c=(await sb.from('contacts').select('*').order('nev')).data||[];window._contacts=c;
   const [owners,searches,leads]=await Promise.all([
-    sb.from('property_owners').select('contact_id,properties(cim)'),
+    sb.from('property_owners').select('contact_id,properties(cim,property_photos(storage_path,borito,sorrend))'),
     sb.from('search_requirements').select('contact_id,telepules,ingatlan_tipus,max_ar'),
     sb.from('leads').select('contact_id,telepules,ingatlan_tipus,kovetkezo_lepes,kovetkezo_datum')]);
-  const roleMap={};const push=(cid,txt)=>{if(!cid)return;(roleMap[cid]=roleMap[cid]||[]).push(txt);};
-  (owners.data||[]).forEach(o=>push(o.contact_id,(o.properties?.cim||'ingatlan')+' – tulajdonos'));
+  const roleMap={},ccover={};const push=(cid,txt)=>{if(!cid)return;(roleMap[cid]=roleMap[cid]||[]).push(txt);};
+  (owners.data||[]).forEach(o=>{push(o.contact_id,(o.properties?.cim||'ingatlan')+' – tulajdonos');const k=pickCover(o.properties?.property_photos);if(k){(ccover[o.contact_id]=ccover[o.contact_id]||[]).push(k);}});
   (searches.data||[]).forEach(s=>push(s.contact_id,`${s.ingatlan_tipus||'ingatlant'} keres ${s.telepules||''}${s.max_ar?', max '+ft(s.max_ar):''}`));
   (leads.data||[]).forEach(l=>{push(l.contact_id,(l.telepules||l.ingatlan_tipus||'lead')+' – lead tulajdonosa');if(l.kovetkezo_lepes&&l.kovetkezo_datum)push(l.contact_id,`következő: ${l.kovetkezo_lepes} (${l.kovetkezo_datum})`);});
   m.innerHTML=`<h2 class="view">Kapcsolatok <span class="small muted">(háttér-nyilvántartás)</span></h2><div class="bar"><input id="cs" placeholder="Keresés név / telefon…"/><button class="btn-gold" onclick="editContact()">+ Új kapcsolat</button></div><div id="clist" class="grid"></div>`;
@@ -363,7 +529,7 @@ async function vContacts(m){
     $('#clist').innerHTML=c.filter(x=>!s||(x.nev||'').toLowerCase().includes(s)||(x.telefonok||[]).join(' ').includes(s)).map(x=>{const roles=roleMap[x.id]||[];
       return `<div class="card"><div class="pad"><h3 onclick="openContact('${x.id}')">${esc(x.nev)}</h3>
         <div class="meta">${(x.telefonok||[]).length?telLine(x.telefonok):'<span class="muted">nincs telefon</span>'}<br>
-        ${roles.length?roles.map(r=>`<div>• ${esc(r)}</div>`).join(''):'<span class="muted">nincs kapcsolódó ügy</span>'}</div>
+        ${roles.length?roles.map(r=>`<div>• ${esc(r)}</div>`).join(''):'<span class="muted">nincs kapcsolódó ügy</span>'}${(ccover[x.id]||[]).length?'<div style="margin-top:.3rem">'+ccover[x.id].slice(0,4).map(k=>miniThumb(k)).join(' ')+'</div>':''}</div>
         ${x.ne_keressuk?'<span class="pill warn">Ne keressük</span>':''}</div></div>`;}).join('')||'<p class="muted">Nincs találat.</p>';};
   $('#cs').oninput=draw;draw();
 }
@@ -390,6 +556,159 @@ window.saveContact=(id,btn)=>busy(btn,async()=>{const arr=v=>v.split(',').map(x=
 
 function modal(html){closeModal();const bg=el(`<div class="modal-bg" id="modalBg"><div class="modal">${html}</div></div>`);bg.onclick=e=>{if(e.target===bg)closeModal();};document.body.appendChild(bg);}
 window.closeModal=()=>{const b=$('#modalBg');if(b)b.remove();};
+
+// ---- Beépített hibajelentés (QA) ----
+window._acts=[];window._errs=[];window._bugRec='';
+addEventListener('error',e=>{try{window._errs.push({t:new Date().toISOString(),msg:e.message,hol:(e.filename||'')+':'+(e.lineno||'')});}catch(_){}});
+addEventListener('unhandledrejection',e=>{try{window._errs.push({t:new Date().toISOString(),msg:'promise: '+((e.reason&&e.reason.message)||e.reason)});}catch(_){}});
+(function(){const _f=window.fetch;window.fetch=function(){return _f.apply(this,arguments).then(r=>{try{if(r&&!r.ok)window._errs.push({t:new Date().toISOString(),msg:'HTTP '+r.status+' '+String(arguments[0]).slice(0,140)});}catch(_){}return r;});};})();
+(function(){const _t=toast;toast=function(m){try{window._acts.push({t:new Date().toISOString(),a:m});}catch(_){}return _t(m);};})();
+window.bugReport=function(){window._bugRec=(document.querySelector('#modalBg h3')||{}).textContent||'';modal('<h3>Hiba jelzése</h3><p class="small muted">Írj egy rövid mondatot; a technikai hátteret automatikusan rögzítem.</p><textarea id="bug_note" placeholder="Mi a gond?"></textarea><div class="bar"><button class="btn-primary" onclick="submitBug()">Elküld</button><button class="btn-ghost" onclick="exportBugs()">Összes exportálása (JSON)</button><button class="btn-ghost" onclick="closeModal()">Mégse</button></div>');};
+window.submitBug=function(){const note=(document.getElementById('bug_note')||{}).value||'';const rep={ts:new Date().toISOString(),user:ME,nezet:(document.querySelector('#nav a.active')||{}).textContent||'',rekord:window._bugRec,megjegyzes:note,elozo_muveletek:(window._acts||[]).slice(-8),js_es_supabase_hibak:(window._errs||[]).slice(-10),viewport:{w:window.innerWidth,h:window.innerHeight},ua:navigator.userAgent};const arr=JSON.parse(localStorage.getItem('qa_bugs')||'[]');arr.push(rep);localStorage.setItem('qa_bugs',JSON.stringify(arr));closeModal();toast('Hiba jelentve ('+arr.length+'). Köszönöm!');};
+window.exportBugs=function(){const data=localStorage.getItem('qa_bugs')||'[]';const b=new Blob([data],{type:'application/json'});const u=URL.createObjectURL(b);const a=document.createElement('a');a.href=u;a.download='ertekpont-hibajelentesek.json';a.click();};
+
+// ===================== Fotó- és dokumentumkezelés =====================
+const FOTO_BUCKET='Fotok', DOC_BUCKET='dokumentumok';
+let FOTOK_PRIVATE=false; // a Fotok bucket priváttá tétele (utolsó lépés) itt vált true-ra
+const _signedCache={};
+function fotoUrl(key){if(!key)return '';if(/^https?:/i.test(key))return key;
+  return `${SUPABASE_URL}/storage/v1/object/public/${FOTO_BUCKET}/${key.split('/').map(encodeURIComponent).join('/')}`;}
+async function fotoUrlAsync(key){if(!key)return '';if(/^https?:/i.test(key))return key;if(!FOTOK_PRIVATE)return fotoUrl(key);
+  if(_signedCache[key]&&_signedCache[key].exp>Date.now())return _signedCache[key].url;
+  const r=await sb.storage.from(FOTO_BUCKET).createSignedUrl(key,3600);if(r.error)return '';
+  _signedCache[key]={url:r.data.signedUrl,exp:Date.now()+3300*1000};return r.data.signedUrl;}
+function miniThumb(key){return `<img class="mini" loading="lazy" src="${key?esc(fotoUrl(key)):PH_IMG}" onerror="this.onerror=null;this.src=PH_IMG">`;}
+function imgMd(key){return `<img class="thumb-md" loading="lazy" src="${key?esc(fotoUrl(key)):PH_IMG}" onerror="this.onerror=null;this.src=PH_IMG">`;}
+function humanSize(b){if(b==null||b==='')return '';b=Number(b);if(b<1024)return b+' B';if(b<1048576)return Math.round(b/1024)+' KB';return (b/1048576).toFixed(1)+' MB';}
+function pickCover(pc){if(!pc||!pc.length)return '';const c=pc.find(x=>x.borito)||pc.slice().sort((a,b)=>(a.sorrend||0)-(b.sorrend||0))[0];return (c&&c.storage_path)||'';}
+function leadCoverKey(x){const rel=x&&x.lead_photos;const lp=Array.isArray(rel)?rel[0]:rel;if(lp&&lp.storage_path)return lp.storage_path;const pr=Array.isArray(x&&x.properties)?x.properties[0]:(x&&x.properties);return pickCover(pr&&pr.property_photos);}
+function taskCover(x,CM){if(x.targy_tabla==='lead')return CM.leadCover[x.targy_id]||'';if(x.targy_tabla==='property'||x.targy_tabla==='ingatlan')return CM.propCover[x.targy_id]||'';return '';}
+async function coverMaps(){const [pp,lp,ld]=await Promise.all([
+    sb.from('property_photos').select('property_id,storage_path,borito,sorrend'),
+    sb.from('lead_photos').select('lead_id,storage_path'),
+    sb.from('leads').select('id,property_id')]);
+  const best={};(pp.data||[]).forEach(p=>{const c=best[p.property_id];if(!c){best[p.property_id]=p;return;}
+    if(p.borito&&!c.borito){best[p.property_id]=p;return;}
+    if(!!p.borito===!!c.borito&&(p.sorrend||0)<(c.sorrend||0))best[p.property_id]=p;});
+  const propCover={};Object.keys(best).forEach(k=>propCover[k]=best[k].storage_path);
+  const leadPhoto={};(lp.data||[]).forEach(p=>{if(!leadPhoto[p.lead_id])leadPhoto[p.lead_id]=p.storage_path;});
+  const leadCover={};(ld.data||[]).forEach(l=>{const pc=l.property_id?propCover[l.property_id]:'';leadCover[l.id]=pc||leadPhoto[l.id]||'';});
+  Object.keys(leadPhoto).forEach(id=>{if(!leadCover[id])leadCover[id]=leadPhoto[id];});
+  return {propCover,leadCover};}
+const IMG_RE=/^image\//;
+async function uploadFile(bucket,file,prefix){const ext=((file.name.split('.').pop()||'dat').toLowerCase().replace(/[^a-z0-9]/g,''))||'dat';
+  const key=`${prefix}/${Date.now()}_${Math.random().toString(36).slice(2,7)}.${ext}`;
+  const up=await sb.storage.from(bucket).upload(key,file,{cacheControl:'3600',upsert:false});if(up.error)throw up.error;return key;}
+async function removeFile(bucket,key){try{const r=await sb.storage.from(bucket).remove([key]);if(r.error){console.warn('Storage törlés sikertelen',bucket,key,r.error.message);return r.error;}return null;}catch(e){console.warn('Storage törlés kivétel',bucket,key,e);return e;}}
+
+// ---- Ingatlanfotók kezelője ----
+async function loadPhotoMgr(pid){const box=$('#photoMgr');if(!box)return;
+  const q=await sb.from('property_photos').select('*').eq('property_id',pid).order('sorrend',{ascending:true}).order('letrehozva',{ascending:true});
+  if(q.error){box.innerHTML='<span class="err small">Fotók betöltése sikertelen: '+esc(q.error.message)+'</span>';return;}
+  const ph=q.data||[];window._pmPhotos=ph;window._pmPid=pid;
+  box.innerHTML=`<div class="up"><label class="btn-gold btn-sm filelbl">📷 Fotó készítése<input type="file" accept="image/*" capture="environment" onchange="pmUpload('${pid}',this.files)"></label>
+     <label class="btn-gold btn-sm filelbl">🖼 Képek kiválasztása<input type="file" accept="image/*" multiple onchange="pmUpload('${pid}',this.files)"></label>
+     <span class="small muted">több kép egyszerre is</span></div><div id="pmProg" class="small"></div>
+   ${ph.length?`<div class="bulkbar small"><label><input type="checkbox" onchange="document.querySelectorAll('.pmck').forEach(c=>c.checked=this.checked)" style="width:auto"> mind</label>
+     <button class="btn-ghost btn-sm" onclick="pmBulk('${pid}','belso')">Kijelöltek → Belső</button>
+     <button class="btn-ghost btn-sm" onclick="pmBulk('${pid}','nyilvanos')">Kijelöltek → Webre mehet</button></div>
+   <div class="pmgrid">${ph.map((p,i)=>pmCard(p,i,ph.length)).join('')}</div>`:'<div class="muted small">Még nincs fotó.</div>'}`;}
+function pmCard(p,i,n){const web=p.lathatosag==='nyilvanos';return `<div class="pmc">
+  <input type="checkbox" class="pmck" value="${p.id}">
+  <img loading="lazy" src="${esc(fotoUrl(p.storage_path))}" onclick="galleryOpen((window._pmPhotos||[]).map(x=>x.storage_path),${i})" onerror="this.onerror=null;this.src=PH_IMG">
+  ${p.borito?'<span class="cov">Borító</span>':''}
+  <div class="pmc-b">
+    <button class="btn-ghost btn-sm" title="feljebb" onclick="pmMove('${p.id}',-1)" ${i===0?'disabled':''}>▲</button>
+    <button class="btn-ghost btn-sm" title="lejjebb" onclick="pmMove('${p.id}',1)" ${i===n-1?'disabled':''}>▼</button>
+    ${p.borito?'':`<button class="btn-ghost btn-sm" onclick="pmCover('${p.id}')">Borító</button>`}
+    <button class="btn-ghost btn-sm" onclick="pmVis('${p.id}','${web?'belso':'nyilvanos'}')">${web?'Webre ✓':'Belső'}</button>
+    <button class="btn-ghost btn-sm" title="törlés" onclick="pmDel('${p.id}')">🗑</button>
+  </div></div>`;}
+window.pmUpload=async(pid,files)=>{files=[...files];if(!files.length)return;const prog=$('#pmProg');
+  const start=(window._pmPhotos||[]).length;const hadCover=(window._pmPhotos||[]).some(p=>p.borito);let ok=0,fail=0;
+  for(let i=0;i<files.length;i++){const f=files[i];if(prog)prog.textContent=`Feltöltés ${i+1}/${files.length}…`;
+    if(!IMG_RE.test(f.type)){fail++;continue;}
+    let key;try{key=await uploadFile(FOTO_BUCKET,f,'properties/'+pid);}catch(e){fail++;continue;}
+    const ins=await sb.from('property_photos').insert({property_id:pid,storage_path:key,sorrend:start+i,lathatosag:'belso',borito:false});
+    if(ins.error){await removeFile(FOTO_BUCKET,key);fail++;}else ok++;}
+  if(ok&&!hadCover){const first=(await sb.from('property_photos').select('id').eq('property_id',pid).order('sorrend').limit(1)).data;if(first&&first[0])await sb.from('property_photos').update({borito:true}).eq('id',first[0].id);}
+  if(prog)prog.textContent='';toast(ok?`Feltöltve: ${ok}${fail?', hiba: '+fail:''}`:`Nem sikerült (${fail} hiba)`);await loadPhotoMgr(pid);};
+window.pmMove=async(id,dir)=>{const ph=(window._pmPhotos||[]).slice();const idx=ph.findIndex(p=>p.id===id);const j=idx+dir;if(idx<0||j<0||j>=ph.length)return;
+  const tmp=ph[idx];ph[idx]=ph[j];ph[j]=tmp;
+  for(let k=0;k<ph.length;k++){if(ph[k].sorrend!==k){const r=await sb.from('property_photos').update({sorrend:k}).eq('id',ph[k].id);if(r.error){toast('Sorrend módosítása sikertelen');break;}}}
+  await loadPhotoMgr(window._pmPid);};
+window.pmCover=async(id)=>{const {error}=await sb.rpc('fn_set_cover',{p_photo:id});if(error){toast('Hiba: '+error.message);return;}toast('Borító beállítva');await loadPhotoMgr(window._pmPid);};
+window.pmVis=async(id,to)=>{const r=await sb.from('property_photos').update({lathatosag:to}).eq('id',id);if(r.error){toast('Hiba: '+r.error.message);return;}await loadPhotoMgr(window._pmPid);};
+window.pmBulk=async(pid,to)=>{const ids=[...document.querySelectorAll('.pmck:checked')].map(c=>c.value);if(!ids.length)return toast('Előbb jelölj ki képeket');
+  const r=await sb.from('property_photos').update({lathatosag:to}).in('id',ids);if(r.error){toast('Hiba: '+r.error.message);return;}toast(ids.length+' kép frissítve');await loadPhotoMgr(pid);};
+window.pmDel=async(id)=>{if(!confirm('Biztosan törlöd ezt a fotót?'))return;const ph=(window._pmPhotos||[]).find(p=>p.id===id);
+  const r=await sb.from('property_photos').delete().eq('id',id);if(r.error){toast('Törlés sikertelen: '+r.error.message);return;}
+  let rmErr=null;if(ph)rmErr=await removeFile(FOTO_BUCKET,ph.storage_path);
+  if(ph&&ph.borito){const nx=(await sb.from('property_photos').select('id').eq('property_id',window._pmPid).order('sorrend').limit(1)).data;if(nx&&nx[0])await sb.from('property_photos').update({borito:true}).eq('id',nx[0].id);}
+  toast(rmErr?'Rekord törölve, a fájl törlése nem sikerült (naplózva).':'Törölve');await loadPhotoMgr(window._pmPid);};
+
+// ---- Galéria / nagyítás ----
+window.galleryOpen=(keys,idx)=>{keys=(keys||[]).filter(Boolean);if(!keys.length)return;let i=idx||0;
+  const bg=el('<div class="lightbox"><button class="lb-x">✕</button><button class="lb-nav lb-prev">‹</button><img><button class="lb-nav lb-next">›</button></div>');
+  const img=bg.querySelector('img');const show=()=>{img.src=fotoUrl(keys[i]);};show();
+  const close=()=>{bg.remove();document.removeEventListener('keydown',kd);};
+  bg.querySelector('.lb-prev').onclick=e=>{e.stopPropagation();i=(i-1+keys.length)%keys.length;show();};
+  bg.querySelector('.lb-next').onclick=e=>{e.stopPropagation();i=(i+1)%keys.length;show();};
+  bg.querySelector('.lb-x').onclick=e=>{e.stopPropagation();close();};
+  const kd=e=>{if(e.key==='Escape')close();else if(e.key==='ArrowLeft')bg.querySelector('.lb-prev').click();else if(e.key==='ArrowRight')bg.querySelector('.lb-next').click();};
+  bg.onclick=e=>{if(e.target===bg)close();};document.addEventListener('keydown',kd);document.body.appendChild(bg);
+  if(keys.length<2){bg.querySelector('.lb-prev').style.display='none';bg.querySelector('.lb-next').style.display='none';}};
+window.lightbox=src=>galleryOpen([src],0);
+
+// ---- Lead azonosítókép ----
+async function saveLeadPhoto(leadId,file){const old=(await sb.from('lead_photos').select('storage_path').eq('lead_id',leadId).maybeSingle()).data;
+  const key=await uploadFile(FOTO_BUCKET,file,'leads/'+leadId);
+  const up=await sb.from('lead_photos').upsert({lead_id:leadId,storage_path:key,lathatosag:'belso'},{onConflict:'lead_id'});
+  if(up.error){await removeFile(FOTO_BUCKET,key);throw up.error;}
+  if(old&&old.storage_path&&old.storage_path!==key)await removeFile(FOTO_BUCKET,old.storage_path);
+  return key;}
+window.leadPhotoPick=async(leadId,input)=>{const f=input.files[0];if(!f)return;if(!IMG_RE.test(f.type))return toast('Csak képfájl tölthető fel');
+  try{await saveLeadPhoto(leadId,f);toast('Azonosítókép mentve');openLead(leadId);}catch(e){toast('Hiba: '+e.message);}};
+window.leadPhotoDel=async(leadId)=>{if(!confirm('Azonosítókép törlése?'))return;const old=(await sb.from('lead_photos').select('storage_path').eq('lead_id',leadId).maybeSingle()).data;
+  const r=await sb.from('lead_photos').delete().eq('lead_id',leadId);if(r.error){toast('Hiba: '+r.error.message);return;}
+  if(old&&old.storage_path)await removeFile(FOTO_BUCKET,old.storage_path);toast('Törölve');openLead(leadId);};
+async function transferLeadPhoto(leadId,propId){try{const lp=(await sb.from('lead_photos').select('storage_path,lathatosag').eq('lead_id',leadId).maybeSingle()).data;
+  if(!lp||!lp.storage_path)return {ok:true,skipped:true};
+  const ex=(await sb.from('property_photos').select('id,borito').eq('property_id',propId)).data||[];
+  const hasCover=ex.some(p=>p.borito);const ext=(lp.storage_path.split('.').pop()||'jpg');const newKey='properties/'+propId+'/'+Date.now()+'_lead.'+ext;
+  const cp=await sb.storage.from(FOTO_BUCKET).copy(lp.storage_path,newKey);
+  if(cp.error){console.warn('lead-foto másolás hiba',cp.error);return {ok:false,error:cp.error.message};}
+  const ins=await sb.from('property_photos').insert({property_id:propId,storage_path:newKey,lathatosag:lp.lathatosag||'belso',borito:!hasCover,sorrend:ex.length});
+  if(ins.error){await removeFile(FOTO_BUCKET,newKey);return {ok:false,error:ins.error.message};}
+  return {ok:true};
+ }catch(e){console.warn('lead-foto átvitel',e);return {ok:false,error:e.message};}}
+
+// ---- Dokumentumkezelő ----
+const DOC_TYPES=['Tulajdoni lap','Térképmásolat','Megbízási szerződés','Alaprajz','Energetikai tanúsítvány','Villamos biztonsági felülvizsgálat','Hirdetési adatlap / tájékoztató','Építési dokumentum','Egyéb'];
+const DOC_PUBLIC_OK=['Alaprajz','Hirdetési adatlap / tájékoztató'];
+async function loadDocMgr(pid){const box=$('#docMgr');if(!box)return;
+  const q=await sb.from('property_documents').select('*').eq('property_id',pid).order('letrehozva',{ascending:false});
+  if(q.error){box.innerHTML='<span class="err small">Dokumentumok betöltése sikertelen: '+esc(q.error.message)+'</span>';return;}
+  const d=q.data||[];window._dmPid=pid;
+  box.innerHTML=`<div class="up"><select id="dmType" style="max-width:240px;width:auto;margin:0 .3rem 0 0">${DOC_TYPES.map(t=>`<option>${t}</option>`).join('')}</select>
+     <label class="btn-gold btn-sm filelbl">+ Dokumentum<input type="file" onchange="dmUpload('${pid}',this.files[0])"></label><span id="dmProg" class="small"></span></div>
+   ${d.length?`<div class="tblwrap"><table><tr><th>Típus</th><th>Fájl</th><th>Feltöltve</th><th>Méret</th><th>Láthatóság</th><th></th></tr>
+     ${d.map(x=>{const pubOk=DOC_PUBLIC_OK.includes(x.tipus);const web=x.lathatosag==='nyilvanos';return `<tr>
+       <td>${esc(x.tipus||'')}</td><td class="small">${esc(x.eredeti_fajlnev||'')}</td><td class="small">${esc((x.letrehozva||'').slice(0,10))}</td><td class="small">${humanSize(x.meret)}</td>
+       <td>${pubOk?`<button class="btn-ghost btn-sm" onclick="dmVis('${x.id}','${web?'belso':'nyilvanos'}')">${web?'Nyilvános ✓':'Belső'}</button>`:'<span class="pill" title="Ez a dokumentumtípus védett, nem tehető nyilvánossá">Belső (védett)</span>'}</td>
+       <td><button class="btn-ghost btn-sm" onclick="dmOpen('${esc(x.storage_path)}')">Megnyit</button> <button class="btn-ghost btn-sm" onclick="dmDel('${x.id}')">🗑</button></td></tr>`;}).join('')}</table></div>`:'<div class="muted small">Még nincs dokumentum.</div>'}`;}
+window.dmUpload=async(pid,file)=>{if(!file)return;const tipus=$('#dmType').value;const prog=$('#dmProg');if(prog)prog.textContent='Feltöltés…';
+  let key;try{key=await uploadFile(DOC_BUCKET,file,'properties/'+pid);}catch(e){if(prog)prog.textContent='';return toast('Feltöltés sikertelen: '+e.message);}
+  const ins=await sb.from('property_documents').insert({property_id:pid,tipus,storage_path:key,eredeti_fajlnev:file.name,meret:file.size,lathatosag:'belso'});
+  if(ins.error){await removeFile(DOC_BUCKET,key);if(prog)prog.textContent='';return toast('Mentés sikertelen: '+ins.error.message);}
+  if(prog)prog.textContent='';toast('Dokumentum feltöltve');await loadDocMgr(pid);};
+window.dmVis=async(id,to)=>{const r=await sb.from('property_documents').update({lathatosag:to}).eq('id',id);
+  if(r.error){toast('Nem engedélyezett: ez a típus nem tehető nyilvánossá.');return;}await loadDocMgr(window._dmPid);};
+window.dmOpen=async(key)=>{const r=await sb.storage.from(DOC_BUCKET).createSignedUrl(key,3600);if(r.error){toast('Nem sikerült megnyitni: '+r.error.message);return;}window.open(r.data.signedUrl,'_blank');};
+window.dmDel=async(id)=>{if(!confirm('Dokumentum törlése?'))return;const doc=(await sb.from('property_documents').select('storage_path').eq('id',id).single()).data;
+  const r=await sb.from('property_documents').delete().eq('id',id);if(r.error){toast('Törlés sikertelen: '+r.error.message);return;}
+  let rmErr=null;if(doc&&doc.storage_path)rmErr=await removeFile(DOC_BUCKET,doc.storage_path);toast(rmErr?'Rekord törölve, a fájl törlése nem sikerült (naplózva).':'Törölve');await loadDocMgr(window._dmPid);};
+
 boot();
 </script>
 </body>
